@@ -6,6 +6,33 @@
 
 **带界面截图的 Wiki 操作手册：** [docs/wiki/Home.md](docs/wiki/Home.md)（截图位于 `docs/wiki/images/`）
 
+**系统架构介绍：** [docs/系统架构介绍.md](docs/系统架构介绍.md)
+
+## 系统展示
+
+本地启动前后端后（`admin` / `admin`）的管理端界面预览。完整截图见 [Wiki](docs/wiki/Home.md)。
+
+<table>
+  <tr>
+    <td align="center"><b>工作台</b><br/><img src="docs/wiki/images/02-dashboard.png" alt="工作台" width="420"/></td>
+    <td align="center"><b>Agent 管理</b><br/><img src="docs/wiki/images/04-ai-agents.png" alt="Agent 管理" width="420"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>工作流管理</b><br/><img src="docs/wiki/images/07-ai-workflows-list.png" alt="工作流管理" width="420"/></td>
+    <td align="center"><b>聊天中心</b><br/><img src="docs/wiki/images/10b-chat-drawer.png" alt="聊天中心" width="420"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>API 调用中心</b><br/><img src="docs/wiki/images/11-invoke-center.png" alt="API 调用中心" width="420"/></td>
+    <td align="center"><b>知识库 · 文档</b><br/><img src="docs/wiki/images/09-kb-documents.png" alt="文档管理" width="420"/></td>
+  </tr>
+</table>
+
+<p align="center">
+  <img src="docs/wiki/images/01-login.png" alt="登录页" width="360"/>
+  <br/>
+  <sub>登录页 · 默认管理员 admin / admin</sub>
+</p>
+
 ## 目录结构
 
 | 路径 | 说明 |
