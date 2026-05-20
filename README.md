@@ -4,6 +4,8 @@
 
 **完整功能说明、API 调用、工作流入参出参、Token 统计与安全建议见：** [docs/AIOS平台说明文档.md](docs/AIOS平台说明文档.md)
 
+**带界面截图的 Wiki 操作手册：** [docs/wiki/Home.md](docs/wiki/Home.md)（截图位于 `docs/wiki/images/`）
+
 ## 目录结构
 
 | 路径 | 说明 |
