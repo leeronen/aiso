@@ -1,0 +1,77 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: aios-platform
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 55MB
+  datasource:
+    # 与 docker/docker-compose.yml 一致：用户 aios / 密码 aios123，库 aios
+    url: jdbc:mysql://127.0.0.1:33061/aios?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: aios
+    password: aios123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+aios:
+  storage:
+    kb-upload-dir: ./data/kb-uploads
+  vector:
+    enabled: true
+    dimensions: 1536
+    datasource:
+      # 与 docker/docker-compose.yml 一致：用户 aios / 密码 aios123，库 aios_vector
+      # 须先启动: docker compose -f docker/docker-compose.yml up -d pgvector
+      url: jdbc:postgresql://127.0.0.1:5432/aios_vector
+      username: aios
+      password: aios123
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 10
+        minimum-idle: 1
+        connection-timeout: 30000
+        validation-timeout: 5000
+        connection-test-query: SELECT 1
+  llm:
+    timeout-seconds: 120
+  embedding:
+    enabled: true
+    # OpenAI 兼容 Embedding API（如 OpenAI / Azure / 通义 / 本地 vLLM 等）
+    base-url: https://api.openai.com/v1
+    api-key: ${OPENAI_API_KEY:}
+    model: text-embedding-3-small
+    dimensions: 1536
+  jwt:
+    secret: "change-me-in-production-use-long-random-secret-key-32bytes-min"
+    access-token-minutes: 120
+    refresh-token-days: 14
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    display-request-duration: true
+
+logging:
+  level:
+    com.aios: INFO

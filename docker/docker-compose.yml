@@ -1,0 +1,68 @@
+# AIOS 双库一键启动：MySQL 业务库 + PostgreSQL/pgvector 向量库
+#
+# 启动:
+#   docker compose -f docker/docker-compose.yml up -d
+#
+# 首次启动会自动执行:
+#   - MySQL: 建库 aios + sql/init.sql
+#   - PostgreSQL: 扩展 vector + sql/pgvector_init.sql
+#
+# 停止:
+#   docker compose -f docker/docker-compose.yml down
+#
+# 清空数据卷后重装:
+#   docker compose -f docker/docker-compose.yml down -v
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: aios-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root123}
+      MYSQL_DATABASE: aios
+      MYSQL_USER: aios
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-aios123}
+      TZ: Asia/Shanghai
+    ports:
+      # 宿主机端口:容器端口（MySQL 容器内固定监听 3306）
+      - "${MYSQL_PORT:-33061}:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone=+08:00
+    volumes:
+      - aios_mysql_data:/var/lib/mysql
+      - ../sql/init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-root123}"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+
+  pgvector:
+    image: pgvector/pgvector:pg16
+    container_name: aios-pgvector
+    environment:
+      POSTGRES_DB: aios_vector
+      POSTGRES_USER: aios
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-aios123}
+      TZ: Asia/Shanghai
+    ports:
+      - "${PG_PORT:-5432}:5432"
+    volumes:
+      - aios_pgvector_data:/var/lib/postgresql/data
+      - ../sql/pgvector_init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aios -d aios_vector"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+      start_period: 10s
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  aios_mysql_data:
+  aios_pgvector_data:

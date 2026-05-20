@@ -1,0 +1,26 @@
+# 仅 PostgreSQL + pgvector（与 MySQL 业务库并存）
+# 推荐双库一起启动: docker compose -f docker/docker-compose.yml up -d
+# 仅向量库: docker compose -f docker/docker-compose.pgvector.yml up -d
+# 或: ./scripts/db-start-pgvector.sh
+
+services:
+  pgvector:
+    image: pgvector/pgvector:pg16
+    container_name: aios-pgvector
+    environment:
+      POSTGRES_DB: aios_vector
+      POSTGRES_USER: aios
+      POSTGRES_PASSWORD: ${PG_PASSWORD:-aios123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - aios_pgvector_data:/var/lib/postgresql/data
+      - ../sql/pgvector_init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aios -d aios_vector"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  aios_pgvector_data:
